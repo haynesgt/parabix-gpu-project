@@ -10,7 +10,7 @@ Questions
 
 * What parallel bitstream technology is already implemented on the GPU, other than editd?
 
-List of resources relating to GPU and RE
+List of resources relating to GPUs and REs
 =
 
 * A Hardware Accelerated Regular Expression Matcher
@@ -60,3 +60,9 @@ List of resources relating to GPU and RE
   Daniele Paolo Scarpazza, Gregory F. Russell
 
   http://delivery.acm.org/10.1145/1550000/1542284/p14-scarpazza.pdf?ip=142.58.15.125&id=1542284&acc=ACTIVE%20SERVICE&key=FD0067F557510FFB%2E87ED2FCA0B39BEF5%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&__acm__=1518033609_70ebd48f5b617cdab25b1e4467c242a9
+  
+* Performance Analysis of Hybrid CPU/GPU Environments
+
+  Michael Shawn Smith
+
+  https://pdxscholar.library.pdx.edu/cgi/viewcontent.cgi?article=1299&context=open_access_etds
