@@ -66,6 +66,12 @@
 
   https://pdxscholar.library.pdx.edu/cgi/viewcontent.cgi?article=1299&context=open_access_etds
 
+* The Landscape of Parallel Computing Research: A View from Berkeley
+
+  Krste Asanovíc, Rastislav Bodik, Bryan Catanzaro, Joseph Gebis, Parry Husbands, Kurt Keutzer, David Patterson, William Plishker, John Shalf, Samuel Williams, and Katherine Yelick
+
+  https://courses.cs.washington.edu/courses/cse549/07wi/files/EECS-2006-183.pdf
+
 ## Programming Resources
 
 * CUDA Toolkit Documentation v7.5
