@@ -2,6 +2,7 @@ Project Ideas
 =
 
 * Implement an ICGrep kernel on the GPU (e.g. the scanmatch kernel)
+* Extend the editd GPU implementation
 
 List of resources relating to GPU and RE
 =
