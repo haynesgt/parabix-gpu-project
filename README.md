@@ -72,6 +72,8 @@
 
   /usr/share/doc/nvidia-cuda-doc/html
   
+  https://web.archive.org/web/20160627124508/http://docs.nvidia.com/cuda/
+  
 * User Guide for NVPTX Back-end
 
   https://llvm.org/docs/NVPTXUsage.html
