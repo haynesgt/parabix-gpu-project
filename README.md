@@ -8,7 +8,7 @@
 
 * What parallel bitstream technology is already implemented on the GPU, other than editd?
 
-# List of resources relating to GPUs and REs
+# Resources
 
 ## Papers
 
