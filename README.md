@@ -1,17 +1,16 @@
-Project Ideas
-=
+# Project Ideas
 
 * Implement an ICGrep kernel on the GPU (e.g. the scanmatch kernel)
 * Extend the editd GPU implementation
 * Implement matching of many patterns against one or many strings, in parallel on the GPU
 
-Questions
-=
+# Questions
 
 * What parallel bitstream technology is already implemented on the GPU, other than editd?
 
-List of resources relating to GPUs and REs
-=
+# List of resources relating to GPUs and REs
+
+## Papers
 
 * A Hardware Accelerated Regular Expression Matcher
 
@@ -66,3 +65,13 @@ List of resources relating to GPUs and REs
   Michael Shawn Smith
 
   https://pdxscholar.library.pdx.edu/cgi/viewcontent.cgi?article=1299&context=open_access_etds
+
+## Programming Resources
+
+* CUDA Toolkit Documentation v7.5
+
+  /usr/share/doc/nvidia-cuda-doc/html
+  
+* User Guide for NVPTX Back-end
+
+  https://llvm.org/docs/NVPTXUsage.html
