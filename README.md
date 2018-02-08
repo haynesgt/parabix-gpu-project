@@ -10,7 +10,7 @@
 
 * What icgrep kernels can be parallelized most easily?
 
-# Example
+# Examples
 
 ## Building a GPU Driver
 
@@ -48,9 +48,49 @@ mGrepGPUDriver->makeKernelCall(sourceK, {}, {CCStream});
 // More calls on the GPU or CPU driver.
 ```
 
+## The editd GPU architecture
+
+### DevOps
+
+First, CUDA 7.5 must be installed: sudo apt-get install nvidia-cuda-toolkit
+
+When using cmake to prepare icgrep, enable CUDA by adding -DENABLE_CUDA_COMPILE=ON
+
+This will add -DCUDA_ENABLED to the compiler command, and adds -lcuda to the linker command
+
+## Command line
+
+
+Use -NVPTX with editd to use the NVPTX builder
+
+```
+echo localhost > /tmp/localhost
+./editd -NVPTX -f /tmp/localhost /etc/hosts
+```
+
+This will read expressions from the file /tmp/localhost and output the number of fuzzy matches found in /etc/hosts
+
+## C++
+
+### main
+
+todo
+
+### Driver
+
+todo
+
+### Kernel
+
+todo
+
+### IR Builder
+
+todo
+
 ## Performance Benchmarks
 
-* We can compare performance to cat, grep, and cpu icgrep
+* We can compare performance to cat, grep, and cpu icgrep, as well as results from other research papers
 
 # Resources
 
