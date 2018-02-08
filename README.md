@@ -8,6 +8,8 @@
 
 * What parallel bitstream technology is already implemented on the GPU, other than editd?
 
+* What icgrep kernels can be parallelized most easily?
+
 # Resources
 
 ## Papers
