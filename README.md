@@ -12,6 +12,8 @@
 
 # Example
 
+## Building a GPU Driver
+
 The current Grep code generation done in *grep_engine.cpp* creates kernel calls like so:
 ```C++
 mGrepDriver = new ParabixDriver("engine");
@@ -46,7 +48,19 @@ mGrepGPUDriver->makeKernelCall(sourceK, {}, {CCStream});
 // More calls on the GPU or CPU driver.
 ```
 
+## Performance Benchmarks
+
+* We can compare performance to cat, grep, and cpu icgrep
+
 # Resources
+
+## GPUs
+
+* We have NVIDIA GTX 1080 and 1070 GPUs
+
+* CSIL has NVIDIA GTX 1050 Ti GPUs
+
+* AWS EC2 has GRID K520 GPUs
 
 ## Papers
 
