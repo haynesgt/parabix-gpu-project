@@ -10,6 +10,42 @@
 
 * What icgrep kernels can be parallelized most easily?
 
+# Example
+
+The current Grep code generation done in *grep_engine.cpp* creates kernel calls like so:
+```C++
+mGrepDriver = new ParabixDriver("engine");
+auto & idb = mGrepDriver->getBuilder();
+
+...
+
+auto ByteStream = mGrepDriver->addBuffer<SourceBuffer>(idb, idb->getStreamSetTy(1, encodingBits));
+auto sourceK = mGrepDriver->addKernelInstance<kernel::FDSourceKernel>(idb);
+sourceK->setInitialArguments({fileDescriptor});
+mGrepDriver->makeKernelCall(sourceK, {}, {ByteStream});
+
+...
+```
+
+The goal of this project is to allow the creation of kernel calls on an `NVPTXDriver` alongside a `ParabixDriver` without conflicts.
+```C++
+gpuDriver = new NVPTXDriver("engine");
+auto & idbGPU = gpuDriver->getBuilder();
+
+cpuDriver = new ParabixDriver("scan");
+auto & idbCPU = cpuDriver->getBuilder();
+
+...
+
+auto CCStream = gpuDriver->addBuffer<SourceBuffer>(idbGPU idbGPU>getStreamSetTy(4), 1);  
+auto sourceK = gpuDriver->addKernelInstance<kernel::MemorySourceKernel>(idbGPU, inputTy, segmentSize);
+mGrepGPUDriver->makeKernelCall(sourceK, {}, {CCStream});  
+
+...
+
+// More calls on the GPU or CPU driver.
+```
+
 # Resources
 
 ## Papers
