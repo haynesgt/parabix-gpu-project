@@ -62,7 +62,23 @@ mGrepGPUDriver->makeKernelCall(sourceK, {}, {CCStream});
 
 * AWS EC2 has GRID K520 GPUs
 
-## Papers
+## Important Articles
+
+* Bitwise Data Parallelism with LLVM: The ICgrep Case Study
+
+  Robert D. Cameron, Nigel Medforth, Dan Lin, Dale Denis, William N. Sumner
+
+  https://www.researchgate.net/profile/Robert_Cameron6/publication/292606865_Bitwise_Data_Parallelism_with_LLVM_The_ICgrep_Case_Study/links/56afa68008ae9f0ff7b26fb3.pdf
+
+* Inductive Doubling Instruction Set Architecture (IDISA): A low-level programming model for cross-platform SIMD programming.
+
+  http://parabix.costar.sfu.ca/wiki/IDISAproject
+
+* Pablo: A Language and Compiler for Parallel Bit Stream Programming
+
+  http://parabix.costar.sfu.ca/wiki/PabloLanguage
+
+## Related Research
 
 * A Hardware Accelerated Regular Expression Matcher
 
@@ -93,12 +109,6 @@ mGrepGPUDriver->makeKernelCall(sourceK, {}, {CCStream});
   Evangelia A. Sitaridi1, Kenneth A. Ross
 
   https://link.springer.com/content/pdf/10.1007%2Fs00778-015-0409-y.pdf
-
-* Bitwise Data Parallelism with LLVM: The ICgrep Case Study
-
-  Robert D. Cameron, Nigel Medforth, Dan Lin, Dale Denis, William N. Sumner
-
-  https://www.researchgate.net/profile/Robert_Cameron6/publication/292606865_Bitwise_Data_Parallelism_with_LLVM_The_ICgrep_Case_Study/links/56afa68008ae9f0ff7b26fb3.pdf
 
 * Fast Regular Expression Matching with Bit-parallel Data Streams
 
