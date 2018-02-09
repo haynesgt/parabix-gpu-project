@@ -23,7 +23,7 @@ mGrepDriver->makeKernelCall(sourceK, {}, {ByteStream});
 ...
 ```
 
-For this project, we make implement an NVPTX driver, perhaps to be put in a pipiline before a CPU driver, e.g.:
+For this project, we may implement an NVPTX driver, perhaps to be put in a pipiline before a CPU driver, e.g.:
 ```C++
 gpuDriver = new NVPTXDriver("engine");
 auto & idbGPU = gpuDriver->getBuilder();
