@@ -2,7 +2,7 @@
 
 * Implement an ICGrep kernel on the GPU (e.g. the scanmatch kernel)
 * Implement matching of many patterns against one or many strings, in parallel on the GPU
-* Fix the editd GPU implementation (and perhaps use CUDA 9 instead of 7.5)
+* Fix and update the editd GPU implementation to compile on modern revisions (and perhaps use CUDA 9 instead of 7.5)
 
 # Examples
 
@@ -50,6 +50,8 @@ First, CUDA 7.5 must be installed: sudo apt-get install nvidia-cuda-toolkit
 
 When using cmake to prepare icgrep, enable CUDA by adding `-DENABLE_CUDA_COMPILE=ON`
 
+At the time of writing editd will fail to compile with `-DCUDA_ENABLED` at the most recent revision. Editd does compile with NVPTX support on revision 5603 and so that is what was used for initial testing.
+
 This will add `-DCUDA_ENABLED` to the compiler command, and adds `-lcuda` to the linker command.
 Pragma checks in the C++ files will enable the GPU code.
 
@@ -64,12 +66,15 @@ echo localhost > /tmp/localhost
 
 This will read expressions from the file /tmp/localhost and output the number of fuzzy matches found in /etc/hosts
 
-TODO:
+### Errors
 
+Running editd with NVPTX support on some machine setups may result in the following error:
+```
 terminate called after throwing an instance of 'std::runtime_error'
   what():  Kernel interface memory_source_O1 not yet finalized.
 Aborted (core dumped)
-
+```
+which might indicate that there are possible pipeline generation issues in the NVPTX driver.
 
 ### C++
 
