@@ -50,21 +50,21 @@ First, CUDA 7.5 must be installed: sudo apt-get install nvidia-cuda-toolkit
 
 When using cmake to prepare icgrep, enable CUDA by adding `-DENABLE_CUDA_COMPILE=ON`
 
-At the time of writing editd will fail to compile with `-DCUDA_ENABLED` at the most recent revision. Editd does compile with NVPTX support on revision 5603 and so that is what was used for initial testing.
+At the time of writing editd will fail to compile with `-DCUDA_ENABLED` at the most recent revision. Editd does compile with NVPTX support on revision 5584 and so that is what was used for initial testing.
 
 This will add `-DCUDA_ENABLED` to the compiler command, and adds `-lcuda` to the linker command.
-Pragma checks in the C++ files will enable the GPU code.
+Pragma checks in the C++ files will enable the GPU code generators.
 
 ### Command line
 
 Use -NVPTX with editd to use the NVPTX builder
 
 ```
-echo localhost > /tmp/localhost
-./editd -NVPTX -f /tmp/localhost /etc/hosts
+echo 127 > /tmp/127
+./editd -NVPTX -f /tmp/127 /etc/hosts
 ```
 
-This will read expressions from the file /tmp/localhost and output the number of fuzzy matches found in /etc/hosts
+This will read expressions from the file /tmp/127 and output the number of fuzzy matches found in /etc/hosts
 
 ### Errors
 
