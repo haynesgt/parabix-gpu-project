@@ -1,18 +1,14 @@
 # Project Ideas
 
 * Implement an ICGrep kernel on the GPU (e.g. the scanmatch kernel)
-* Extend the editd GPU implementation
 * Implement matching of many patterns against one or many strings, in parallel on the GPU
+* Fix and update the editd GPU implementation to compile on modern revisions (and perhaps use CUDA 9 instead of 7.5)
 
-# Questions
+# Examples
 
-* What parallel bitstream technology is already implemented on the GPU, other than editd?
+## Building a GPU Driver
 
-* What icgrep kernels can be parallelized most easily?
-
-# Example
-
-The current Grep code generation done in *grep_engine.cpp* creates kernel calls like so:
+The current icGrep code generation is done in *grep_engine.cpp*, which creates kernel calls like so:
 ```C++
 mGrepDriver = new ParabixDriver("engine");
 auto & idb = mGrepDriver->getBuilder();
@@ -27,7 +23,7 @@ mGrepDriver->makeKernelCall(sourceK, {}, {ByteStream});
 ...
 ```
 
-The goal of this project is to allow the creation of kernel calls on an `NVPTXDriver` alongside a `ParabixDriver` without conflicts.
+For this project, we make implement an NVPTX driver, perhaps to be put in a pipiline before a CPU driver, e.g.:
 ```C++
 gpuDriver = new NVPTXDriver("engine");
 auto & idbGPU = gpuDriver->getBuilder();
@@ -46,9 +42,85 @@ mGrepGPUDriver->makeKernelCall(sourceK, {}, {CCStream});
 // More calls on the GPU or CPU driver.
 ```
 
+## The GPU editd architecture
+
+### DevOps
+
+First, CUDA 7.5 must be installed: sudo apt-get install nvidia-cuda-toolkit
+
+When using cmake to prepare icgrep, enable CUDA by adding `-DENABLE_CUDA_COMPILE=ON`
+
+At the time of writing editd will fail to compile with `-DCUDA_ENABLED` at the most recent revision. Editd does compile with NVPTX support on revision 5603 and so that is what was used for initial testing.
+
+This will add `-DCUDA_ENABLED` to the compiler command, and adds `-lcuda` to the linker command.
+Pragma checks in the C++ files will enable the GPU code.
+
+### Command line
+
+Use -NVPTX with editd to use the NVPTX builder
+
+```
+echo localhost > /tmp/localhost
+./editd -NVPTX -f /tmp/localhost /etc/hosts
+```
+
+This will read expressions from the file /tmp/localhost and output the number of fuzzy matches found in /etc/hosts
+
+### Errors
+
+Running editd with NVPTX support on some machine setups may result in the following error:
+```
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Kernel interface memory_source_O1 not yet finalized.
+Aborted (core dumped)
+```
+which might indicate that there are possible pipeline generation issues in the NVPTX driver.
+
+### C++
+
+#### call stack
+
+* editd/editd.cpp:main connects buffers, drivers, kernels, and builders
+  * block size is always 64
+  * GPU program requires input regexes to be from files
+  * editd/editd.cpp:editdGPUCodeGen creates NVPTXDriver("editd")
+    * SourceBuffer -> MemorySourceKernel -> editdGPUKernel -> ExternalBuffer
+    * editd/editd_gpu_kernel.cpp defines editdGPUKernel, which builds the basic blocks
+  * editd/editd.cpp:mergeGPUCodeGen creates NVPTXDriver("merge"): creates basic blocks to merge streams
+  * IR_Gen/CudaDriver.h:RunPTX uses the CUDA API to launch the kernel
+  * editd/editd.cpp:editdScanCPUCodeGen runs a CPU pass (ParabixDriver) on the GPU output
+
+## Performance Benchmarking
+
+* We can compare performance to cat, grep, and cpu icgrep, as well as results from other research papers
+
 # Resources
 
-## Papers
+## GPUs
+
+* We have NVIDIA GTX 1080 and 1070 GPUs
+
+* CSIL has NVIDIA GTX 1050 Ti GPUs
+
+* AWS EC2 has GRID K520 GPUs
+
+## Important Articles
+
+* Bitwise Data Parallelism with LLVM: The ICgrep Case Study
+
+  Robert D. Cameron, Nigel Medforth, Dan Lin, Dale Denis, William N. Sumner
+
+  https://www.researchgate.net/profile/Robert_Cameron6/publication/292606865_Bitwise_Data_Parallelism_with_LLVM_The_ICgrep_Case_Study/links/56afa68008ae9f0ff7b26fb3.pdf
+
+* Inductive Doubling Instruction Set Architecture (IDISA): A low-level programming model for cross-platform SIMD programming.
+
+  http://parabix.costar.sfu.ca/wiki/IDISAproject
+
+* Pablo: A Language and Compiler for Parallel Bit Stream Programming
+
+  http://parabix.costar.sfu.ca/wiki/PabloLanguage
+
+## Related Research
 
 * A Hardware Accelerated Regular Expression Matcher
 
@@ -79,12 +151,6 @@ mGrepGPUDriver->makeKernelCall(sourceK, {}, {CCStream});
   Evangelia A. Sitaridi1, Kenneth A. Ross
 
   https://link.springer.com/content/pdf/10.1007%2Fs00778-015-0409-y.pdf
-
-* Bitwise Data Parallelism with LLVM: The ICgrep Case Study
-
-  Robert D. Cameron, Nigel Medforth, Dan Lin, Dale Denis, William N. Sumner
-
-  https://www.researchgate.net/profile/Robert_Cameron6/publication/292606865_Bitwise_Data_Parallelism_with_LLVM_The_ICgrep_Case_Study/links/56afa68008ae9f0ff7b26fb3.pdf
 
 * Fast Regular Expression Matching with Bit-parallel Data Streams
 
