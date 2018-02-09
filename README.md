@@ -8,7 +8,7 @@
 
 ## Building a GPU Driver
 
-The current Grep code generation done in *grep_engine.cpp* creates kernel calls like so:
+The current icGrep code generation is done in *grep_engine.cpp*, which creates kernel calls like so:
 ```C++
 mGrepDriver = new ParabixDriver("engine");
 auto & idb = mGrepDriver->getBuilder();
@@ -23,7 +23,7 @@ mGrepDriver->makeKernelCall(sourceK, {}, {ByteStream});
 ...
 ```
 
-The goal of this project is to allow the creation of kernel calls on an `NVPTXDriver` alongside a `ParabixDriver` without conflicts.
+For this project, we make implement an NVPTX driver, perhaps to be put in a pipiline before a CPU driver, e.g.:
 ```C++
 gpuDriver = new NVPTXDriver("engine");
 auto & idbGPU = gpuDriver->getBuilder();
@@ -42,15 +42,16 @@ mGrepGPUDriver->makeKernelCall(sourceK, {}, {CCStream});
 // More calls on the GPU or CPU driver.
 ```
 
-## The editd GPU architecture
+## The GPU editd architecture
 
 ### DevOps
 
 First, CUDA 7.5 must be installed: sudo apt-get install nvidia-cuda-toolkit
 
-When using cmake to prepare icgrep, enable CUDA by adding -DENABLE_CUDA_COMPILE=ON
+When using cmake to prepare icgrep, enable CUDA by adding `-DENABLE_CUDA_COMPILE=ON`
 
-This will add -DCUDA_ENABLED to the compiler command, and adds -lcuda to the linker command
+This will add `-DCUDA_ENABLED` to the compiler command, and adds `-lcuda` to the linker command.
+Pragma checks in the C++ files will enable the GPU code.
 
 ### Command line
 
