@@ -58,8 +58,7 @@ When using cmake to prepare icgrep, enable CUDA by adding -DENABLE_CUDA_COMPILE=
 
 This will add -DCUDA_ENABLED to the compiler command, and adds -lcuda to the linker command
 
-## Command line
-
+### Command line
 
 Use -NVPTX with editd to use the NVPTX builder
 
@@ -70,21 +69,54 @@ echo localhost > /tmp/localhost
 
 This will read expressions from the file /tmp/localhost and output the number of fuzzy matches found in /etc/hosts
 
-## C++
+TODO:
 
-### main
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Kernel interface memory_source_O1 not yet finalized.
+Aborted (core dumped)
+
+
+### C++
+
+#### call stack
+
+* editd/editd.cpp:main: connects buffers, drivers, kernels, and builders
+
+ * block size is always 64
+
+ * requires input regexes to be from files
+
+* editdGPUCodeGen(patternLen)
+
+ * new NVPTXDriver
+
+ * mergeGPUCodeGen
+
+  * ParabixDriver pxDriver("scan")
+  
+  * ((Module*)M)->getOrInsertFunction("Main", ...
+  
+  * pxDriver.addBuffer<SourceBuffer>
+  
+  * pxDriver.addKernelInstance<kernel::MemorySourceKernel>
+  
+  * pxDriver.addBuffer<ExternalBuffer>
+  
+  * pxDriver.addKernelInstance<kernel::editdGPUKernel>
+  
+  * .. something is broken here
+
+ * editdScanCPUCodeGen() : a CPU pass runs on the GPU output
+
+#### Driver
 
 todo
 
-### Driver
+#### Kernel
 
 todo
 
-### Kernel
-
-todo
-
-### IR Builder
+#### IR Builder
 
 todo
 
