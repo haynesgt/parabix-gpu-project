@@ -85,7 +85,7 @@ which might indicate that there are possible pipeline generation issues in the N
   * GPU program requires input regexes to be from files
   * editd/editd.cpp:editdGPUCodeGen creates NVPTXDriver("editd")
     * SourceBuffer -> MemorySourceKernel -> editdGPUKernel -> ExternalBuffer
-    * editd/editd_gpu_kernel.cpp defines editgGPUKernel, which builds the basic blocks
+    * editd/editd_gpu_kernel.cpp defines editdGPUKernel, which builds the basic blocks
   * editd/editd.cpp:mergeGPUCodeGen creates NVPTXDriver("merge"): creates basic blocks to merge streams
   * IR_Gen/CudaDriver.h:RunPTX uses the CUDA API to launch the kernel
   * editd/editd.cpp:editdScanCPUCodeGen runs a CPU pass (ParabixDriver) on the GPU output
