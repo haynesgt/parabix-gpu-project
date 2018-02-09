@@ -1,14 +1,8 @@
 # Project Ideas
 
 * Implement an ICGrep kernel on the GPU (e.g. the scanmatch kernel)
-* Extend the editd GPU implementation
 * Implement matching of many patterns against one or many strings, in parallel on the GPU
-
-# Questions
-
-* What parallel bitstream technology is already implemented on the GPU, other than editd?
-
-* What icgrep kernels can be parallelized most easily?
+* Fix the editd GPU implementation (and perhaps use CUDA 9 instead of 7.5)
 
 # Examples
 
