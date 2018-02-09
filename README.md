@@ -46,13 +46,19 @@ mGrepGPUDriver->makeKernelCall(sourceK, {}, {CCStream});
 
 ### DevOps
 
-First, CUDA 7.5 must be installed: sudo apt-get install nvidia-cuda-toolkit
+* First, install CUDA 7.5: `sudo apt-get install nvidia-cuda-toolkit`
 
-When using cmake to prepare icgrep, enable CUDA by adding `-DENABLE_CUDA_COMPILE=ON`
+* To build llvm, use this command, which includes the "NVPTX" target:
 
-At the time of writing editd will fail to compile with `-DCUDA_ENABLED` at the most recent revision. Editd does compile with NVPTX support on revision 5584 and so that is what was used for initial testing.
+  `cmake -DCMAKE_INSTALL_PREFIX=../libllvm -DLLVM_TARGETS_TO_BUILD="X86;NVPTX" -DLLVM_BUILD_TOOLS=OFF -DLLVM_BUILD_EXAMPLES=OFF -DCMAKE_BUILD_TYPE=Release ../llvm-3.8.0.src`
 
-This will add `-DCUDA_ENABLED` to the compiler command, and adds `-lcuda` to the linker command.
+* When using cmake to prepare icgrep, enable CUDA by adding `-DENABLE_CUDA_COMPILE=ON`, and I suggest use boost 61
+
+  cmake -DCMAKE_PREFIX_PATH=../libllvm -DCMAKE_BUILD_TYPE=Release ../icgrep -DENABLE_CUDA_COMPILE=ON -DBOOST_ROOT=/home/ubuntu/boost_1_61_0
+
+* At the time of writing editd will fail to compile with `-DCUDA_ENABLED` at the most recent revision. Editd does compile with NVPTX support on revision 5584 and so that is what was used for initial testing.
+
+  This will add `-DCUDA_ENABLED` to the compiler command, and adds `-lcuda` to the linker command.
 Pragma checks in the C++ files will enable the GPU code generators.
 
 ### Command line
@@ -62,6 +68,10 @@ Use -NVPTX with editd to use the NVPTX builder
 ```
 echo 127 > /tmp/127
 ./editd -NVPTX -f /tmp/127 /etc/hosts
+Elapsed time : 0.047776 ms
+pattern_segs = 1, total_len = 1
+total candidate from the first filter is 256
+total candidate from the second filter is 252
 ```
 
 This will read expressions from the file /tmp/127 and output the number of fuzzy matches found in /etc/hosts
