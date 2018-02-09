@@ -39,7 +39,7 @@ void cat(FILE *f) {
     size_t nread = 0;
     size_t total = 0;
     while (BUFFERSIZE == (
-        nread = fread(buffer, 1, BUFFERSIZE, f)),
+        nread = fread(buffer, 1, BUFFERSIZE / 1, f)),
         total += nread,
         nread
     );
