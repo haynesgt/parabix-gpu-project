@@ -80,47 +80,17 @@ Aborted (core dumped)
 
 #### call stack
 
-* editd/editd.cpp:main: connects buffers, drivers, kernels, and builders
+* editd/editd.cpp:main connects buffers, drivers, kernels, and builders
+  * block size is always 64
+  * GPU program requires input regexes to be from files
+  * editd/editd.cpp:editdGPUCodeGen creates NVPTXDriver("editd")
+    * SourceBuffer -> MemorySourceKernel -> editdGPUKernel -> ExternalBuffer
+    * editd/editd_gpu_kernel.cpp defines editgGPUKernel, which builds the basic blocks
+  * editd/editd.cpp:mergeGPUCodeGen creates NVPTXDriver("merge"): creates basic blocks to merge streams
+  * IR_Gen/CudaDriver.h:RunPTX uses the CUDA API to launch the kernel
+  * editd/editd.cpp:editdScanCPUCodeGen runs a CPU pass (ParabixDriver) on the GPU output
 
- * block size is always 64
-
- * requires input regexes to be from files
-
-* editdGPUCodeGen(patternLen)
-
- * new NVPTXDriver
-
- * mergeGPUCodeGen
-
-  * ParabixDriver pxDriver("scan")
-  
-  * ((Module*)M)->getOrInsertFunction("Main", ...
-  
-  * pxDriver.addBuffer<SourceBuffer>
-  
-  * pxDriver.addKernelInstance<kernel::MemorySourceKernel>
-  
-  * pxDriver.addBuffer<ExternalBuffer>
-  
-  * pxDriver.addKernelInstance<kernel::editdGPUKernel>
-  
-  * .. something is broken here
-
- * editdScanCPUCodeGen() : a CPU pass runs on the GPU output
-
-#### Driver
-
-todo
-
-#### Kernel
-
-todo
-
-#### IR Builder
-
-todo
-
-## Performance Benchmarks
+## Performance Benchmarking
 
 * We can compare performance to cat, grep, and cpu icgrep, as well as results from other research papers
 
