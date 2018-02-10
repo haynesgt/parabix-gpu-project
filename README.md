@@ -54,7 +54,7 @@ mGrepGPUDriver->makeKernelCall(sourceK, {}, {CCStream});
 
 * When using cmake to prepare icgrep, enable CUDA by adding `-DENABLE_CUDA_COMPILE=ON`, and I suggest use boost 61
 
-  cmake -DCMAKE_PREFIX_PATH=../libllvm -DCMAKE_BUILD_TYPE=Release ../icgrep -DENABLE_CUDA_COMPILE=ON -DBOOST_ROOT=/home/ubuntu/boost_1_61_0
+  `cmake -DCMAKE_PREFIX_PATH=../libllvm -DCMAKE_BUILD_TYPE=Release ../icgrep -DENABLE_CUDA_COMPILE=ON -DBOOST_ROOT=/home/ubuntu/boost_1_61_0`
 
 * At the time of writing editd will fail to compile with `-DCUDA_ENABLED` at the most recent revision. Editd does compile with NVPTX support on revision 5584 and so that is what was used for initial testing.
 
