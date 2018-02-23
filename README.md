@@ -100,9 +100,30 @@ which might indicate that there are possible pipeline generation issues in the N
   * IR_Gen/CudaDriver.h:RunPTX uses the CUDA API to launch the kernel
   * editd/editd.cpp:editdScanCPUCodeGen runs a CPU pass (ParabixDriver) on the GPU output
 
+#### Example GPU builder call stack
+
+Bootstrap, which makes icgrep use a driver which is hooked up to the NVPTX Builder:
+
+1. main (if codegen::NVPTX)
+2. GrepEngine::grepCodeGen_nvptx
+3. NVPTXDriver::NVPTXDriver
+4. GetIDISA_GPU_Builder
+5. KernelBuilderImpl<IDISA_NVPTX20_Builder>
+
+JIT Compile, where the pablo compiler :
+
+1. PabloCompiler::compileStatement (e.g. if stmt is matchStar)
+2. CarryManager::addCarryInCarryOut
+3. IDISA_NVPTX20_Builder::bitblock_add_with_carry
+4. IDISA_NVPTX20_Builder::mLongAddFunc
+5. <llvm function>
+  
+  (TODO: look over this stack again)
+
 ## Performance Benchmarking
 
-* We can compare performance to cat, grep, and cpu icgrep, as well as results from other research papers
+* We can compare performance to cat, grep, and cpu icgrep, as well as results from other research papers.
+* NVIDIA has a profiler which might give us some interesting results.
 
 ### Sample benchmarks:
 
