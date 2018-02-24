@@ -102,7 +102,7 @@ which might indicate that there are possible pipeline generation issues in the N
 
 #### Example GPU builder call stack
 
-Bootstrap, which makes icgrep use a driver which is hooked up to the NVPTX Builder:
+Bootstrap, which hooks up icgrep with the driver which uses the NVPTX Builder:
 
 1. main (if codegen::NVPTX)
 2. GrepEngine::grepCodeGen_nvptx
@@ -110,15 +110,17 @@ Bootstrap, which makes icgrep use a driver which is hooked up to the NVPTX Build
 4. GetIDISA_GPU_Builder
 5. KernelBuilderImpl<IDISA_NVPTX20_Builder>
 
-JIT Compile, where the pablo compiler :
+Codegen
 
+0. NVPTXDriver::finalizeObject (for kernel in pipeline)
+0. Kernel::generateX where X is Kernel
+0. PabloKernel::generateDoBlockMethod
+0. PabloCompiler::compileX where x is empty or a pablo element
 1. PabloCompiler::compileStatement (e.g. if stmt is matchStar)
 2. CarryManager::addCarryInCarryOut
 3. IDISA_NVPTX20_Builder::bitblock_add_with_carry
 4. IDISA_NVPTX20_Builder::mLongAddFunc
-5. <llvm function>
-  
-  (TODO: look over this stack again)
+5. \<llvm function\>
 
 ## Performance Benchmarking
 
