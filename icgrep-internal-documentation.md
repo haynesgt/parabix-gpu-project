@@ -51,6 +51,7 @@ label = "RE[i] (no CC_Multiplexing)"
 "MatchResultsBufs[i]"
 }
 
+"REs" -> "icgrepK"
 "BasisBits" ->"icgrepK"
 "LineBreakStream" -> "icgrepK"
 "RequiredStreams" -> "icgrepK"
