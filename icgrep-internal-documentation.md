@@ -108,4 +108,4 @@ label = "RE[i] (no CC_Multiplexing)"
 7. RE_Compiler::compileX (X is each element, recursively)
 8. RE_Compiler::compileRep
 9. RE_Compiler::processUnboundedRep (note: other parts of rep are also processed)
-10: PabloBuilder::createX (X is each thing to create)
+10. PabloBuilder::createX (X is each thing to create)
