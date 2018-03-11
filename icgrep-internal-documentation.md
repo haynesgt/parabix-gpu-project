@@ -109,3 +109,30 @@ label = "RE[i] (no CC_Multiplexing)"
 8. RE_Compiler::compileRep
 9. RE_Compiler::processUnboundedRep (note: other parts of rep are also processed)
 10. PabloBuilder::createX (X is each thing to create)
+
+# Editd
+
+## Codegen
+
+1. editd/editd.cpp:main
+1. editd/editd.cpp:editdGPUCodeGen
+
+## Kernel Launch
+
+1. editd/editd.cpp:main
+1. editd/EditdCudaDriver.h:RunPTX (immediately after codegen)
+1. cuLaunchKernel(function, ... (after loading functions from module from `.ptx` file)
+1. cuLaunchKernel(merge, ...
+
+
+## Problem trace
+
+```
+LLVM ERROR: SourceBuffer: base address was declared with address space 0 but given a pointer in address space 1
+./icgrep-build-cuda-5891/editd(_ZNK7parabix12 SourceBuffer 14 setBaseAddress EPN5IDISA13IDISA_BuilderEPN4llvm5ValueES6_+0x2aa) [0x6323fa]
+./icgrep-build-cuda-5891/editd(_ZN6kernel18 MemorySourceKernel 24 generateInitializeMethod ERKSt10unique_ptrINS_13KernelBuilderESt14default_deleteIS2_EE+0x8e) [0x63f3de]
+./icgrep-build-cuda-5891/editd(_ZN6kernel6 Kernel 14 generateKernel ERKSt10unique_ptrINS_13 KernelBuilder ESt14default_deleteIS2_EE+0x928) [0x61c028]
+./icgrep-build-cuda-5891/editd(_ZN11NVPTXDriver14 finalizeObject Ev+0x161) [0x610ba1]
+./icgrep-build-cuda-5891/editd(_Z15 editdGPUCodeGen j+0xa3f) [0x599edf]
+./icgrep-build-cuda-5891/editd( main +0x450) [0x575110]
+```
