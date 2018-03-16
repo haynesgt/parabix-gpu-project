@@ -61,4 +61,7 @@ void StreamSetBuffer::allocateBuffer(const std::unique_ptr<kernel::KernelBuilder
 ```
 
 TODO
-more
+note that SourceBuffer is allways Alloc, while StreamSetBuffer uses Malloc for address space 0
+Tried to convert SourceBuffer to aligned Malloc:
+LLVM ERROR: stdlib.h does not contain either aligned_alloc or posix_memalign
+...
