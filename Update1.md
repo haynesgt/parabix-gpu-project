@@ -2,6 +2,12 @@
 
 ## Notes on the GPU
 
+The GPU is very different from the CPU.
+A GPU program needs to account for restrictions.
+For example, each GPU thread has a local block of memory that cannot be accessed from other threads.
+Also, some threads will always execute the same instruction at the same time.
+Here are some details.
+
 * Thread Hierarchy
   * The GPU is divided into grids
     * Each has a unique grid id (gridid)
@@ -15,6 +21,11 @@
     * icgrep uses warps of 64 threads
   * Warps are divided into threads
     * Each thread in a block has a unique thread id (tid)
+
+![](img/grid-of-thread-blocks.png)
+
+![](img/thread-batching.png)
+
 * Memory Hierarchy: Address spaces
   * Address space 1 is the "global" address space, which is accessable to all threads in all blocks in all grids on the GPU
   * Address space 3 is the "shared" address space, which is accessable to all threads in one block on the GPU
@@ -22,6 +33,8 @@
   * Address space 5 is the "local" address space, which is accessable to one thread on the GPU
   * Address space 0 is the "generic" address space, which includes all other address spaces.
     * An address in another space can be converted to a generic address by adding the base address for the smaller address's window.
+
+![](img/memory-hierarchy.png)
 
 ## Summary of GPU Problems
 
