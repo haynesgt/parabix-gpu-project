@@ -66,10 +66,10 @@ The problem was that icgrep was constructing buffers in the default address spac
 
 
 ``` {diff}
-Index: icgrep/grep_engine.cpp
+Index: grep_engine.cpp
 ===================================================================
---- icgrep/grep_engine.cpp	(revision 5597)
-+++ icgrep/grep_engine.cpp	(working copy)
+--- grep_engine.cpp	(revision 5597)
++++ grep_engine.cpp	(working copy)
 @@ -304,7 +304,7 @@
  }
  
@@ -163,5 +163,41 @@ Index: icgrep/grep_engine.cpp
 +    StreamSetBuffer * Matches = std::get<1>(grepPipeline(mGrepDriver, REs, grepMode, encodingBits, ByteStream, 1));
      
      kernel::Kernel * matchCountK = mGrepDriver->addKernelInstance(make_unique<kernel::PopcountKernel>(idb));
-     mGrepDriver->makeKernelCall(matchCountK, {Matches}, {})
+     mGrepDriver->makeKernelCall(matchCountK, {Matches}, {});
+Index: kernels/streamset.cpp
+===================================================================
+--- kernels/streamset.cpp	(revision 5597)
++++ kernels/streamset.cpp	(working copy)
+@@ -33,6 +33,10 @@
+             Constant * size = ConstantExpr::getSizeOf(ty);
+             size = ConstantExpr::getMul(size, ConstantInt::get(size->getType(), mBufferBlocks));
+             mStreamSetBufferPtr = iBuilder->CreatePointerCast(iBuilder->CreateCacheAlignedMalloc(size), ty->getPointerTo());
++        } else if (mAddressSpace == 1) {
++            Constant * size = ConstantExpr::getSizeOf(ty);
++            size = ConstantExpr::getMul(size, ConstantInt::get(size->getType(), mBufferBlocks));
++            mStreamSetBufferPtr = iBuilder->CreatePointerCast(iBuilder->CreateMalloc(size), ty->getPointerTo());
+         } else {
+             mStreamSetBufferPtr = iBuilder->CreateCacheAlignedAlloca(ty, iBuilder->getSize(mBufferBlocks));
+         }
+@@ -43,7 +47,7 @@
+ }
+ 
+ void StreamSetBuffer::releaseBuffer(const std::unique_ptr<kernel::KernelBuilder> & iBuilder) const {
+-    if (mAddressSpace == 0) {
++    if (mAddressSpace == 0 || mAddressSpace == 1) {
+         iBuilder->CreateFree(mStreamSetBufferPtr);
+     }
+ }
+@@ -270,7 +274,7 @@
+         mStreamSetBufferPtr = iBuilder->CreateCacheAlignedAlloca(ty, iBuilder->getSize(mBufferBlocks));
+         iBuilder->CreateAlignedStore(Constant::getNullValue(ty), mStreamSetBufferPtr, iBuilder->getCacheAlignment());
+     } else {
+-        report_fatal_error("StreamSetBuffer::allocateBuffer() was called twice on the same stream set");
++        report_fatal_error("SourceBuffer::allocateBuffer() was called twice on the same stream set");
+     }
+ }
+ 
+@@ -557,6 +561,12 @@
+     report_fatal_error("Expandable buffers: getLinearlyAccessibleItems is not supported.");
+ }
 ```
