@@ -102,7 +102,8 @@ which might indicate that there are possible pipeline generation issues in the N
 
 ## Performance Benchmarking
 
-* We can compare performance to cat, grep, and cpu icgrep, as well as results from other research papers
+* We can compare performance to cat, grep, and cpu icgrep, as well as results from other research papers.
+* NVIDIA has a profiler which might give us some interesting results.
 
 ### Sample benchmarks:
 
