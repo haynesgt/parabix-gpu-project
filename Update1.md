@@ -214,3 +214,17 @@ Index: kernels/streamset.cpp
      report_fatal_error("Expandable buffers: getLinearlyAccessibleItems is not supported.");
  }
 ```
+
+== Performance impact
+
+Command: `time /tmp/icgrep -NVPTX -f patterns random`
+
+Files:
+
+* `patterns` contains 100 6-character patterns
+
+* `random` contains 1.0 GB of 63-character lines, 87 of which are in `patterns`
+
+| CPU icgrep | GPU icgrep Malloc | GPU icgrep Alloc | grep |
+| -----------|-------------------|------------------|------|
+| 18 s | 12 s | 10 s | 4s |
