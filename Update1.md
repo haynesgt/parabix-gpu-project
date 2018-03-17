@@ -60,8 +60,8 @@ void StreamSetBuffer::allocateBuffer(const std::unique_ptr<kernel::KernelBuilder
 }
 ```
 
-TODO
-note that SourceBuffer is allways Alloc, while StreamSetBuffer uses Malloc for address space 0
-Tried to convert SourceBuffer to aligned Malloc:
-LLVM ERROR: stdlib.h does not contain either aligned_alloc or posix_memalign
-...
+## LLVM ERROR: stdlib.h does not contain either aligned_alloc or posix_memalign
+
+The problem was that icgrep was constructing buffers in the default address space, where aligned allocs were the default. The function for aligned alloc functions did not exist on the gpu device (posix_memalign or alligned_alloc).
+
+
