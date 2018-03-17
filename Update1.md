@@ -215,7 +215,7 @@ Index: kernels/streamset.cpp
  }
 ```
 
-== Performance impact
+## Performance impact
 
 Command: `time /tmp/icgrep -NVPTX -f patterns random`
 
