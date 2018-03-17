@@ -23,7 +23,7 @@ mGrepDriver->makeKernelCall(sourceK, {}, {ByteStream});
 ...
 ```
 
-For this project, we make implement an NVPTX driver, perhaps to be put in a pipiline before a CPU driver, e.g.:
+For this project, we may implement an NVPTX driver, perhaps to be put in a pipiline before a CPU driver, e.g.:
 ```C++
 gpuDriver = new NVPTXDriver("engine");
 auto & idbGPU = gpuDriver->getBuilder();
@@ -46,25 +46,35 @@ mGrepGPUDriver->makeKernelCall(sourceK, {}, {CCStream});
 
 ### DevOps
 
-First, CUDA 7.5 must be installed: sudo apt-get install nvidia-cuda-toolkit
+* First, install CUDA 7.5: `sudo apt-get install nvidia-cuda-toolkit`
 
-When using cmake to prepare icgrep, enable CUDA by adding `-DENABLE_CUDA_COMPILE=ON`
+* To build llvm, use this command, which includes the "NVPTX" target:
 
-At the time of writing editd will fail to compile with `-DCUDA_ENABLED` at the most recent revision. Editd does compile with NVPTX support on revision 5603 and so that is what was used for initial testing.
+  `cmake -DCMAKE_INSTALL_PREFIX=../libllvm -DLLVM_TARGETS_TO_BUILD="X86;NVPTX" -DLLVM_BUILD_TOOLS=OFF -DLLVM_BUILD_EXAMPLES=OFF -DCMAKE_BUILD_TYPE=Release ../llvm-3.8.0.src`
 
-This will add `-DCUDA_ENABLED` to the compiler command, and adds `-lcuda` to the linker command.
-Pragma checks in the C++ files will enable the GPU code.
+* When using cmake to prepare icgrep, enable CUDA by adding `-DENABLE_CUDA_COMPILE=ON`, and I suggest use boost 61
+
+  `cmake -DCMAKE_PREFIX_PATH=../libllvm -DCMAKE_BUILD_TYPE=Release ../icgrep -DENABLE_CUDA_COMPILE=ON -DBOOST_ROOT=/home/ubuntu/boost_1_61_0`
+
+* At the time of writing editd will fail to compile with `-DCUDA_ENABLED` at the most recent revision. Editd does compile with NVPTX support on revision 5584 and so that is what was used for initial testing.
+
+  This will add `-DCUDA_ENABLED` to the compiler command, and adds `-lcuda` to the linker command.
+Pragma checks in the C++ files will enable the GPU code generators.
 
 ### Command line
 
 Use -NVPTX with editd to use the NVPTX builder
 
 ```
-echo localhost > /tmp/localhost
-./editd -NVPTX -f /tmp/localhost /etc/hosts
+echo 127 > /tmp/127
+./editd -NVPTX -f /tmp/127 /etc/hosts
+Elapsed time : 0.047776 ms
+pattern_segs = 1, total_len = 1
+total candidate from the first filter is 256
+total candidate from the second filter is 252
 ```
 
-This will read expressions from the file /tmp/localhost and output the number of fuzzy matches found in /etc/hosts
+This will read expressions from the file /tmp/127 and output the number of fuzzy matches found in /etc/hosts
 
 ### Errors
 
@@ -92,7 +102,55 @@ which might indicate that there are possible pipeline generation issues in the N
 
 ## Performance Benchmarking
 
-* We can compare performance to cat, grep, and cpu icgrep, as well as results from other research papers
+* We can compare performance to cat, grep, and cpu icgrep, as well as results from other research papers.
+* NVIDIA has a profiler which might give us some interesting results.
+
+### Sample benchmarks:
+
+```
+ubuntu@ip-172-31-46-4:~/parabix.costar.sfu.ca/icgrep-devel/icgrep-build-cuda$ time ./icgrep UFOFH ~/random -c -NVPTX
+37
+
+real	0m6.194s
+user	0m1.072s
+sys	0m0.560s
+ubuntu@ip-172-31-46-4:~/parabix.costar.sfu.ca/icgrep-devel/icgrep-build-cuda$ time ./icgrep UFOFH ~/random -c -NVPTX
+37
+
+real	0m6.028s
+user	0m1.048s
+sys	0m0.508s
+ubuntu@ip-172-31-46-4:~/parabix.costar.sfu.ca/icgrep-devel/icgrep-build-cuda$ time ./icgrep UFOFH ~/random -c
+37
+
+real	0m1.011s
+user	0m0.952s
+sys	0m0.056s
+ubuntu@ip-172-31-46-4:~/parabix.costar.sfu.ca/icgrep-devel/icgrep-build-cuda$ time grep UFOFH ~/random -c
+37
+
+real	0m1.009s
+user	0m0.856s
+sys	0m0.152s
+ubuntu@ip-172-31-46-4:~/parabix.costar.sfu.ca/icgrep-devel/icgrep-build-cuda$ time cat ~/random > /dev/null
+
+real	0m0.176s
+user	0m0.004s
+sys	0m0.168s
+ubuntu@ip-172-31-46-4:~/parabix.costar.sfu.ca/icgrep-devel/icgrep-build-cuda$ ls -lh ~/random
+-rw-rw-r-- 1 ubuntu ubuntu 1.0G Feb 10 00:34 /home/ubuntu/random
+ubuntu@ip-172-31-46-4:~/parabix.costar.sfu.ca/icgrep-devel/icgrep-build-cuda$ head ~/random
+SL4QHUCH4K4LXJXFCOIO5TEEZH2BWORULLKC2QLI7SWU4XUT3WU7EFCFHSBK5F5
+4HQPFGQ6Z2LJRMGR5UERHTHGH27SBLE3GMTGLPQBKPGWMVV6DY7IVUJNAUQEVTK
+J5R3WITDUWHWZDOQ55VGR3ZALC55VRYXFU7SAIFKKWNOE2OIJ62HGZRXYMFIULA
+J22AZUZ3WKNR5FZOVDZJBENB6ZNQZEICRVWQTQ35CD45LESK24RJBP46KYNKBRH
+ISPF5MKJGBHJ4KXWVARWQS5R6UKHOGI4DJSLVWPXBS7PYRJ6HV7C2UPAGF7UMPL
+K2BBUGN5ULCRJ5HUKIAKBWL2NYR2GZHBVCQEMHGI4LAVBR55VC5CV7UDMA7VU2R
+37UODX6UUJ3IVIPD6DDSRSSM4ZMJQSK3KJOUIHLUEVSFV6GWWBWCZMKBSGYHKG4
+J6DAN2G6OOZYVFV3S6KMR42T647M43HZNHTCEXTIZQPG6ZBJLQSC4JAYHHATR6V
+NTEBKCH3YCHT7FSWNOBKP5HV3ATI6QUEKCVSFM2RBVHEJCFYMIGQFCU72362M5T
+FM26OKSJVM5U7WOWIWPSLWTEBPO2HDV5RVN457GUJXK7E56EQRAHITUUCOP2LHL
+```
 
 # Resources
 
