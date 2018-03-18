@@ -73,9 +73,29 @@ void StreamSetBuffer::allocateBuffer(const std::unique_ptr<kernel::KernelBuilder
 }
 ```
 
-## LLVM ERROR: stdlib.h does not contain either aligned_alloc or posix_memalign
+## Heap Allocations for Stream Set Buffers on the GPU
 
-The problem was that icgrep was constructing buffers in the default address space, where aligned allocs were the default. The function for aligned alloc functions did not exist on the gpu device (posix_memalign or alligned_alloc).
+Revision 5597 introduces heap allocation for stream set buffers; attempting to use icgrep with `-NVPTX` set would result in a `LLVM ERROR: stdlib.h does not contain either aligned_alloc or posix_memalign` error, which would indicate that the builder is attempting to call one of the allocation functions from the NVPTXDriver when `CreateCacheAlignedMalloc` is called. 
+
+The new stream set buffer allocation method is defined in revision 5597 like so:
+```
+void StreamSetBuffer::allocateBuffer(const std::unique_ptr<kernel::KernelBuilder> & iBuilder) {
+    if (LLVM_LIKELY(mStreamSetBufferPtr == nullptr)) {
+        Type * const ty = getType();
+        if (mAddressSpace == 0) {
+            Constant * size = ConstantExpr::getSizeOf(ty);
+            size = ConstantExpr::getMul(size, ConstantInt::get(size->getType(), mBufferBlocks));
+            mStreamSetBufferPtr = iBuilder->CreatePointerCast(iBuilder->CreateCacheAlignedMalloc(size), ty->getPointerTo());
+        } else {
+            mStreamSetBufferPtr = iBuilder->CreateCacheAlignedAlloca(ty, iBuilder->getSize(mBufferBlocks));
+        }
+        iBuilder->CreateAlignedStore(Constant::getNullValue(ty), mStreamSetBufferPtr, iBuilder->getCacheAlignment());
+    } else {
+        report_fatal_error("StreamSetBuffer::allocateBuffer() was called twice on the same stream set");
+    }
+}
+ ```
+The problem was that icgrep was constructing buffers in the default address space, where aligned allocs were the default. The function for aligned alloc functions did not exist on the gpu device (posix_memalign or alligned_alloc). Parameterizing `grepPipeline` to take an address space (defaulting to 0 for the CPU) fixes the error but leaves the stream set buffer allocated on the stack rather than the heap. 
 
 
 ``` {diff}
