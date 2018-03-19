@@ -265,10 +265,21 @@ Command: `time /tmp/icgrep -NVPTX -f patterns random`
 
 Files:
 
-* `patterns` contains 100 6-character patterns
+* `patterns` contains 100 6-character patterns (no concat, alt, or star)
 
-* `random` contains 1.0 GB of 63-character lines, 87 of which are in `patterns`
+* `random` contains 1.0 GB of 63-character lines, 87 of which match a pattern in `patterns`
 
 | CPU icgrep | GPU icgrep Malloc | GPU icgrep Alloc | grep |
-| -----------|-------------------|------------------|------|
-| 18 s | 12 s | 10 s | 4s |
+|------------|-------------------|------------------|------|
+| 18 s       | 12 s              | 10 s             | 4s   |
+
+
+## Implementing multi-grep
+
+Current support for multiple grep patterns either combines the expressions (e1, e2, ...) into one expression with alternation (e1|e2|...), or runs grep kernels in series (with -enable-multigrep-kernels). Alternation is the default.
+
+We want something like this to run on the gpu.
+
+![](img/gpu-pablo.svg)
+
+The kernel architecture is complex and is built for several threads, not hundreds or thousands of threads, so we still need to look into how exactly kernels are scheduled to run.
