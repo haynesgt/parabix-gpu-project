@@ -36,3 +36,13 @@ sys     0m0.544s
 ```
 (6+ minutes)
 ```
+
+1 icgrep-5706 program with NVPTX support, running over 10 parallel streams:
+```
+real    14.667s
+user    14.19s
+sys     0.36s
+```
+CUDA reports an elapsed kernel time of ~65ms
+
+A large portion of the time running icgrep with multiple streams appears to be during the reading and writing of the multiple \*.ptx files; putting all of the GPU related kernel code in one .ptx file should increase performance in this regard.
