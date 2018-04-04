@@ -37,12 +37,49 @@ sys     0m0.544s
 (6+ minutes)
 ```
 
+The following NVPTX related tests were run on a GTX 960.
+
 1 icgrep-5706 program with NVPTX support, running over 10 parallel streams. Each stream searching for 100 patterns out of 1000 in a 1GB file:
 ```
 real    1m17.41s
 user    14.88s
 sys     0.97s
-```
-CUDA reports an elapsed kernel time of 60 seconds
 
-A large portion of the user CPU time running icgrep with multiple streams appears to be during the reading and writing of the multiple \*.ptx files; putting all of the GPU related kernel code in one .ptx file should increase performance in this regard.
+CUDA    60016.199219 ms
+```
+
+NVPTX icgrep, running over 5 parallel streams. Each stream searching for 200 patterns:
+```
+real    1m02.67s
+user    44.69s
+sys     9.85s
+
+CUDA    39787.601562 ms
+```
+
+20 parallel streams. 50 patterns per stream:
+```
+real    1m30.62s
+user    12.77s
+sys     0.59s
+
+CUDA    77227.875000 ms
+```
+
+7 parallel streams. ~150 patterns per stream:
+```
+real    1m08.23s
+user    28.60s
+sys     4.87s
+
+CUDA    48923.113281 ms
+```
+
+14 parallel streams. ~75 patterns per stream:
+```
+real    1m17.10s
+user    13.45s
+sys     0.58s
+
+CUDA    63023.867188 ms
+```
