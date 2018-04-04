@@ -6,9 +6,11 @@ The code generation for the pipeline is in `icgrep/toolchain/pipeline.cpp`
 
 There are 3 pipeline models:
 
+* generatePipelineLoop
 * generateParallelPipeline
 * generateSegmentParallelPipeline
-* generatePipelineLoop
+
+The NVPTX uses generatePipelineLoop. This method just creates one synchronous program for each part (1/256th) of the file.
 
 ## Utilising CUDA Streams
 
