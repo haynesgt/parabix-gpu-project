@@ -10,6 +10,12 @@ There are 3 pipeline models:
 * generateSegmentParallelPipeline
 * generatePipelineLoop
 
+## Utilising CUDA Streams
+
+The NVPTX implementation in icgrep-5706 performs synchronous function calls on the default stream, so the obvious first step is to see what happens if we divide the work and process the work concurrently. For CUDA applications, this is done by specifying *streams* to run specific functions on.
+
+Due to the way the NVPTXDriver is currently implemented, we divided the regular expression work by creating a different ptx file for each group of work to be run in parallel. Then for each ptx file we obtain the main function and run it on a separate CUDA stream.
+
 ## The promise for multithreading improvements
 
 1 icgrep-5706 program searching for 1000 simple patterns in a 1GB file:
