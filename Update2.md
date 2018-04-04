@@ -37,12 +37,12 @@ sys     0m0.544s
 (6+ minutes)
 ```
 
-1 icgrep-5706 program with NVPTX support, running over 10 parallel streams:
+1 icgrep-5706 program with NVPTX support, running over 10 parallel streams. Each stream searching for 100 patterns out of 1000 in a 1GB file:
 ```
-real    14.667s
-user    14.19s
-sys     0.36s
+real    1m17.41s
+user    14.88s
+sys     0.97s
 ```
-CUDA reports an elapsed kernel time of ~65ms
+CUDA reports an elapsed kernel time of 60 seconds
 
-A large portion of the time running icgrep with multiple streams appears to be during the reading and writing of the multiple \*.ptx files; putting all of the GPU related kernel code in one .ptx file should increase performance in this regard.
+A large portion of the user CPU time running icgrep with multiple streams appears to be during the reading and writing of the multiple \*.ptx files; putting all of the GPU related kernel code in one .ptx file should increase performance in this regard.
