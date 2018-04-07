@@ -87,3 +87,5 @@ From the previous NVPTX test results there are three major causes of long CPU ti
 3. Moving large amounts of data to and from the GPU
 
 The first issue can be removed by implementing a cache for the ptx files such that they are not run on subsequent invokations of icgrep.
+
+### Interleaving Loading and Running PTX
