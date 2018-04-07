@@ -51,23 +51,28 @@ sys     0m0.544s
 
 ## icgrep on the GPU
 
-<TODO> Format this data in tables.
+The default NVPTX implementation in icgrep performs synchronous function calls on the default stream, our tests attempted to  see what happens to performance if we divide the work and process the work concurrently. For CUDA applications, this is done by specifying streams to run specific functions on.
 
-### Without GPU Parallelism
+We divided the regular expression work by creating a different ptx file for each group of regular expressions to be run in parallel. Then for each ptx file we obtain the main function and run it on a separate CUDA stream.
 
-<TODO>
+The tests were run as follows:
+`icgrep -f <pattern_file> <sample_data> -re-num <pps> -enable-multigrep-kernels`
 
-### With GPU Parallelism
+Where `pattern_file` is the generated set of patterns specified above, `sample_data` is the sample data specified above, and
+`pps` is the maximum number of patterns per stream which is equal to the maximum number of regular expressions in a single group.
 
-<TODO> Explain Stream Context
+
+<TODO> Run a quick test with a grouping of 1000 to demonstrate no parallelism
   
 |Streams|Patterns per Stream|CPU Time|GPU Time|
 |-------|-------------------|--------|--------|
-| 10 | 100 | 14.88s | 60.02s |
 | 5 | 200 | 44.69s | 39.79s |
+| 7 | 150 | 28.69s | 48.92s|
+| 10 | 100 | 14.88s | 60.02s |
+| 14 | 75 | 13.45 | 63.02s|
 | 20 | 50 | 12.77s | 77.23s|
-| 7 | ~150 | 28.69s | 48.92s|
-| 14 | ~75 | 13.45 | 63.02s|
+
+There is a clear correlation between the maximum number of patterns per stream and the CPU time spent processing the kernels into ptx files and loading said files into modules.
 
 <TODO> Tests with ptx caching?
 
