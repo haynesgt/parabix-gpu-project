@@ -13,8 +13,7 @@ NVPTX related tests were performed on two separate machines:
 ## Revisions Used
 
 All NVPTX related tests were performed on a modified version of icgrep at revision 5597 as this revision was the most recent
-revision that we could get NVPTX support working in icgrep with minimal changes to the codebase. Any tests for icgrep matching
-expressions on the CPU were run on revision 5706.
+revision that we could get NVPTX support working in icgrep with minimal changes to the codebase. Any tests for icgrep matching expressions on the CPU were run on revision 5706.
 
 ## Test Data
 
@@ -78,8 +77,13 @@ Where `pattern_file` is the generated set of patterns specified above, `sample_d
 | 14 | 75 | 13.45 | 63.02s|
 | 20 | 50 | 12.77s | 77.23s|
 
-There is a clear correlation between the maximum number of patterns per stream and the CPU time spent processing the kernels into ptx files and loading said files into modules.
+There is a clear correlation between the maximum number of patterns per stream and the CPU time spent processing the kernels into ptx files, loading said files into modules, and moving data to and from the GPU.
 
-<TODO> Tests with ptx caching?
+### Reducing CPU Time with a PTX Cache
 
+From the previous NVPTX test results there are three major causes of long CPU time when running icgrep on the GPU:
+1. Creating the various kernels to process into ptx files
+2. Loading multiple ptx files and loading them into CUDA modules
+3. Moving large amounts of data to and from the GPU
 
+The first issue can be removed by implementing a cache for the ptx files such that they are not run on subsequent invokations of icgrep.
