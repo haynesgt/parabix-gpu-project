@@ -2,7 +2,13 @@
 
 ## Test Machines Used
 
-<TODO>
+NVPTX related tests were performed on two separate machines:
+* One local machine containing
+    * An Intel i7 6700k CPU running at 4.4GHz
+    * One NVIDIA GTX 960 GPU
+* One remote Amazon p2.xlarge instance
+    * Runs on Intel Xeon E5-2686 v4 CPUs
+    * CUDA functions running on NVIDIA K80 GPUs
 
 ## Revisions Used
 
@@ -55,7 +61,7 @@ The default NVPTX implementation in icgrep performs synchronous function calls o
 
 We divided the regular expression work by creating a different ptx file for each group of regular expressions to be run in parallel. Then for each ptx file we obtain the main function and run it on a separate CUDA stream.
 
-The tests were run as follows:
+The tests were run as follows on the local machine:
 `icgrep -f <pattern_file> <sample_data> -re-num <pps> -enable-multigrep-kernels`
 
 Where `pattern_file` is the generated set of patterns specified above, `sample_data` is the sample data specified above, and
