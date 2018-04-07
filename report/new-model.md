@@ -22,4 +22,4 @@ A GPU can search for regex matches a thousand times faster than the file can be 
 
 The NVPTX runner will simply compile regular expressions into `.ptx` files of PTX assembly in the current directory, which are then compiled into cubin objects and run on the GPU. If the same expression is used multiple times, it will rebuild the objects entirely. It would be better to cache the programs instead of recompiling them each time, and it would be better to store compiled `.cubin` objects instead of `.ptx` assembly. Since build times are high, this would be extremely helpful when a grep program is run in the inner loop of a bash script.
 
-The CPU objects already have caching infrastructure. They use the ParabixObjectCache, which caches individual kernel object files, 
+The CPU objects already have caching infrastructure. They use the ParabixObjectCache, which caches individual kernel object files. The kernel name is defined in the kernel's constructor, passed through `annotateKernelNameWithDebugFlags`, and added to the builder name, input buffer ids, and output buffer ids.
