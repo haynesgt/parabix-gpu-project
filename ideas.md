@@ -43,3 +43,13 @@ user	1m22.968s
 sys	0m1.500s
 ...
 ```
+
+# Not parallel
+
+An FSA is not completely parallel.
+
+We need to mix logic circuits with bit blocks.
+
+# Profiling
+
+5s to transfer 8 GB twice
