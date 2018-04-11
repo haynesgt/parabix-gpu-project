@@ -65,17 +65,17 @@ The tests were run as follows on the local machine:
 
 Where `pattern_file` is the generated set of patterns specified above, `sample_data` is the sample data specified above, and
 `pps` is the maximum number of patterns per stream which is equal to the maximum number of regular expressions in a single group.
-
-
-<TODO> Run a quick test with a grouping of 1000 to demonstrate no parallelism
   
 |Streams|Patterns per Stream|CPU Time|GPU Time|
 |-------|-------------------|--------|--------|
+| 1 | 1000 | 112.59s | 62.52s |
+| 2 | 500 | 86.29s | 45.87s |
+| 4 | 250 | 53.79s | 36.69s |
 | 5 | 200 | 44.69s | 39.79s |
 | 7 | 150 | 28.69s | 48.92s|
 | 10 | 100 | 14.88s | 60.02s |
-| 14 | 75 | 13.45 | 63.02s|
-| 20 | 50 | 12.77s | 77.23s|
+| 14 | 75 | 13.45 | 63.02s |
+| 20 | 50 | 12.77s | 77.23s |
 
 There is a clear correlation between the maximum number of patterns per stream and the CPU time spent processing the kernels into ptx files, loading said files into modules, and moving data to and from the GPU.
 
